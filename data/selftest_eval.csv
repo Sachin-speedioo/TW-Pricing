@@ -1,0 +1,197 @@
+model_key,variant_id,variant_basis,mfg_year,owner_count,odometer_km,city,pickup_date,category,m2w_model_id,expected_price
+ktm|390 duke,BW-V10843,model_base_variant,2024.0,1.0,,Pune,2026-09-25,Bike,BW-M2013,198586.3228818588
+hero|hf dlx,IBB214051002,model_base_variant,2022.0,1.0,12407.0,Pune,2026-09-25,Bike,IBB214051,42712.10892072939
+royalenfield|hunter 350,BD-V4785,model_base_variant,2024.0,1.0,24472.0,Pune,2026-09-25,Bike,BD-M1292,132617.38481939316
+royalenfield|classic 350,BW-V8657,model_base_variant,2021.0,1.0,11249.0,Pune,2026-09-25,Bike,BW-M1529,147650.18374985937
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,5885.0,Pune,2026-09-25,Bike,BW-M78,126168.6489160298
+royalenfield|classic 350,BW-V4542,model_base_variant,2017.0,1.0,19982.0,Pune,2026-09-25,Bike,BW-M78,116170.03940490192
+hero|splendor pro,BW-V78,matched_variant,2012.0,1.0,30002.0,Pune,2026-09-27,Bike,BW-M41,17531.798141489
+kawasaki|ninja 300,BW-V14311,matched_variant,2024.0,1.0,,Pune,2026-09-27,Bike,BW-M2515,245232.5199996216
+honda|shine,BD-V4637,model_base_variant,2021.0,1.0,52099.0,Pune,2026-09-27,Bike,BD-M1294,44346.106513307175
+royalenfield|classic 350,BW-V4542,model_base_variant,2016.0,1.0,,Pune,2026-09-27,Bike,BW-M78,103379.1934469616
+honda|activa,BD-V4655,matched_variant,2023.0,1.0,21388.0,Pune,2026-09-28,Scooter,BD-M1027,51237.97439764912
+royalenfield|guerrilla 450,BD-V5362,model_base_variant,2026.0,1.0,,Pune,2026-09-28,Bike,BD-M1751,222558.97127189167
+honda|shine,BD-V4638,matched_variant,2024.0,1.0,28407.0,Pune,2026-09-28,Bike,BD-M1294,56547.692924881696
+tvs|raider,BD-V2639,model_base_variant,2026.0,1.0,7318.0,Pune,2026-09-28,Bike,BD-M1480,61603.81468906596
+yamaha|fz 25,BW-V4981,matched_variant,2019.0,1.0,64776.0,Pune,2026-09-28,Bike,BW-M1038,38945.42788517592
+ktm|200 duke,BW-V127,model_base_variant,2020.0,1.0,33185.0,Pune,2026-09-28,Bike,BW-M72,89427.42899548606
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,76526.0,Pune,2026-09-28,Bike,BW-M78,118793.19966985076
+yamaha|mt 15,IBB238075005,model_base_variant,2023.0,1.0,37183.0,Pune,2026-09-28,Bike,IBB238075,104459.02946762169
+ktm|390 duke,BW-V4508,model_base_variant,2017.0,1.0,23093.0,Pune,2026-09-28,Bike,BW-M1004,96381.72296532606
+royalenfield|bullet 350,BD-V2678,model_base_variant,2025.0,1.0,10036.0,Pune,2026-09-29,Bike,BD-M1501,167844.34043610544
+honda|dio,IBB217069002,closest_variant_unconfirmed,2021.0,1.0,38314.0,Pune,2026-09-29,Scooter,IBB217069,39056.33159286923
+honda|activa 3g,BW-V806,matched_variant,2015.0,1.0,69339.0,Pune,2026-09-29,Scooter,BW-M615,18740.395067062345
+hero|splendor plus i3s,BW-V5021,closest_variant_unconfirmed,2023.0,1.0,32626.0,Pune,2026-09-29,Bike,BW-M1057,49659.688658627616
+suzuki|access 125,IBB231002006,model_base_variant,2019.0,1.0,,Pune,2026-09-29,Scooter,IBB231002,33924.03619182682
+suzuki|hayabusa,IBB231037001,model_base_variant,2019.0,3.0,,Pune,2026-09-29,Bike,IBB231037,214218.4064789488
+ktm|rc 125,BW-V8695,model_base_variant,2021.0,2.0,31377.0,Pune,2026-09-29,Bike,BW-M1641,73488.62990358108
+bajaj|avenger street 160,BW-V5082,model_base_variant,2022.0,1.0,23600.0,Pune,2026-09-30,Bike,BW-M1278,49444.55811009365
+royalenfield|classic signals,BW-V4839,matched_variant,2023.0,1.0,19767.0,Pune,2026-09-30,Bike,BW-M1177,152777.1651976367
+honda|activa 3g,BW-V806,matched_variant,2016.0,1.0,67657.0,Pune,2026-09-30,Scooter,BW-M615,20834.21980780372
+honda|hornet 160 r,BW-V4480,model_base_variant,2017.0,1.0,41436.0,Pune,2026-09-30,Bike,BW-M631,31257.413507138037
+bajaj|pulsar ns 125,IBB206086001,model_base_variant,2022.0,1.0,71180.0,Pune,2026-09-30,Bike,IBB206086,44206.95187299511
+royalenfield|bullet 350,BW-V5147,model_base_variant,2015.0,1.0,37973.0,Pune,2026-09-30,Bike,BW-M81,84699.97719529847
+royalenfield|classic 350,BW-V4542,model_base_variant,2016.0,1.0,76686.0,Pune,2026-09-30,Bike,BW-M78,97726.53296921136
+honda|cb 350,BD-V4031,matched_variant,2024.0,1.0,32647.0,Pune,2026-09-25,Bike,BD-M2095,136387.45808415825
+triumph|speed 400,BW-V11437,matched_variant,2023.0,1.0,,Pune,2026-10-01,Bike,BW-M2233,158026.52892796183
+jawa|42,IBB240008001,matched_variant,2024.0,1.0,17325.0,Pune,2026-10-01,Bike,IBB240008,102490.76351663214
+harleydavidson|x 440 t,BD-V5252,matched_variant,2026.0,1.0,,Pune,2026-10-04,Bike,BD-M2662,220528.36169291136
+yamaha|fz s v2,BW-V4491,model_base_variant,2014.0,1.0,81894.0,Pune,2026-10-04,Bike,BW-M578,17944.88646807856
+honda|dio 125,BD-V4765,matched_variant,2024.0,1.0,27803.0,Pune,2026-10-04,Scooter,BD-M2039,52622.60053262437
+hero|splendor plus xtec,BD-V4744,model_base_variant,2022.0,1.0,38234.0,Pune,2026-10-04,Bike,BD-M1957,38318.7111962416
+tvs|jupiter 125,IBB235069001,model_base_variant,2022.0,2.0,42858.0,Pune,2026-10-04,Scooter,IBB235069,39493.96351736714
+bajaj|chetak,BW-V16047,matched_variant,2022.0,1.0,17344.0,Pune,2026-10-04,EV,BW-M1285,35539.347153298535
+royalenfield|hunter 350,BW-V10677,model_base_variant,2022.0,1.0,5395.0,Pune,2026-10-04,Bike,BW-M1885,121719.33104815066
+royalenfield|classic 350,BW-V4542,model_base_variant,2014.0,1.0,4648.0,Pune,2026-10-04,Bike,BW-M78,82200.4038790032
+hero|hf dlx,IBB214051004,matched_variant,2021.0,1.0,29622.0,Pune,2026-10-04,Bike,IBB214051,37947.95248629852
+royalenfield|bullet 350,BW-V5147,model_base_variant,2016.0,1.0,31982.0,Pune,2026-10-04,Bike,BW-M81,92551.86932838046
+royalenfield|classic 350,BW-V8657,model_base_variant,2021.0,1.0,4448.0,Pune,2026-10-04,Bike,BW-M1529,145675.76171388937
+hero|splendor plus,IBB214056001,model_base_variant,2022.0,1.0,17310.0,Pune,2026-10-05,Bike,IBB214056,43707.32970412564
+tvs|jupiter,IBB235014009,model_base_variant,2019.0,1.0,96402.0,Pune,2026-10-05,Scooter,IBB235014,28188.047886036788
+bajaj|pulsar ns 200,BD-V3775,model_base_variant,2022.0,1.0,32146.0,Pune,2026-10-05,Bike,BD-M340,67302.57852243626
+honda|activa,BD-V4562,matched_variant,2023.0,1.0,55593.0,Pune,2026-10-05,Scooter,BD-M1027,47572.27275702707
+royalenfield|classic 350,BD-V2937,model_base_variant,2024.0,1.0,24515.0,Pune,2026-10-05,Bike,BD-M1030,171806.8131304532
+yamaha|fz s v2,BW-V4491,model_base_variant,2018.0,1.0,10089.0,Pune,2026-09-30,Bike,BW-M578,34837.22092646599
+royalenfield|classic 350,BW-V4542,model_base_variant,2016.0,1.0,49558.0,Pune,2026-10-06,Bike,BW-M78,98971.04662859596
+honda|activa 125,IBB217001002,model_base_variant,2019.0,1.0,50265.0,Pune,2026-10-06,Scooter,IBB217001,30049.589703970243
+royalenfield|classic 350,BW-V4542,model_base_variant,2016.0,1.0,37108.0,Pune,2026-10-06,Bike,BW-M78,100450.04545797144
+kawasaki|ninja 300,BW-V20936,matched_variant,2026.0,1.0,,Pune,2026-10-06,Bike,BW-M3334,263462.9616729729
+ktm|rc 200,BW-V523,model_base_variant,2015.0,2.0,,Pune,2026-10-07,Bike,BW-M408,49552.80061364602
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,12367.0,Pune,2026-10-07,Bike,BW-M78,125586.97416188184
+hero|hf dlx,IBB214051002,model_base_variant,2022.0,1.0,23152.0,Pune,2026-10-07,Bike,IBB214051,42501.92793031067
+honda|activa 5g,BW-V4747,model_base_variant,2018.0,1.0,90016.0,Pune,2026-10-07,Scooter,BW-M1142,27068.518093773597
+triumph|scrambler 400 x,BW-V11439,matched_variant,2023.0,1.0,,Pune,2026-10-07,Bike,BW-M2235,185603.3446229986
+jawa|42 bobber,BW-V13767,model_base_variant,2023.0,1.0,,Pune,2026-10-07,Bike,BW-M2089,115017.83700021834
+hero|splendor plus xtec,BD-V4744,model_base_variant,2022.0,1.0,48196.0,Pune,2026-10-07,Bike,BD-M1957,37309.02831015129
+triumph|speed t 4,BW-V18355,matched_variant,2024.0,1.0,,Pune,2026-10-08,Bike,BW-M2999,141417.13213134007
+yamaha|mt 15 v2,BD-V4974,model_base_variant,2025.0,1.0,3159.0,Pune,2026-10-08,Bike,BD-M2535,111352.03614435343
+honda|dio,IBB217060001,model_base_variant,2018.0,2.0,48819.0,Pune,2026-10-08,Scooter,IBB217060,24691.33772150465
+hero|splendor plus,IBB214056001,model_base_variant,2024.0,1.0,9819.0,Pune,2026-10-08,Bike,IBB214056,51280.82913074167
+tvs|jupiter,IBB235046002,model_base_variant,2024.0,1.0,8412.0,Pune,2026-10-08,Scooter,IBB235046,53400.72234978784
+hero|super splendor,BW-V5347,matched_variant,2021.0,1.0,73499.0,Pune,2026-10-08,Bike,BW-M44,34353.397139087654
+yezdi|adventure,BW-V17783,model_base_variant,2022.0,1.0,24049.0,Pune,2026-10-08,Bike,BW-M1687,92953.36402498576
+yamaha|r 15,IBB238077001,model_base_variant,2023.0,1.0,31564.0,Pune,2026-10-09,Bike,IBB238077,112067.01566910908
+honda|dio,BD-V4517,matched_variant,2023.0,1.0,41214.0,Pune,2026-10-09,Scooter,BD-M2317,48482.07206802793
+royalenfield|classic 350,BW-V4542,model_base_variant,2015.0,2.0,33562.0,Pune,2026-10-09,Bike,BW-M78,88534.39013658109
+suzuki|access 125,IBB231057001,model_base_variant,2024.0,1.0,,Pune,2026-10-09,Scooter,IBB231057,65961.70431056952
+hero|splendor plus,IBB214056001,model_base_variant,2023.0,1.0,24787.0,Pune,2026-10-11,Bike,IBB214056,46600.46719553039
+royalenfield|hunter 350,BD-V4785,model_base_variant,2024.0,2.0,20833.0,Pune,2026-10-11,Bike,BD-M1292,126979.8316442242
+yamaha|fz s v3,IBB238055001,model_base_variant,2019.0,1.0,53298.0,Pune,2026-10-11,Bike,IBB238055,39395.68315846471
+royalenfield|classic 350 signals,IBB230004001,matched_variant,2022.0,1.0,31281.0,Pune,2026-10-11,Bike,IBB230004,135857.56505651947
+yamaha|fz s v3,IBB238055001,model_base_variant,2019.0,1.0,48501.0,Pune,2026-10-11,Bike,IBB238055,39659.73455557061
+royalenfield|meteor 350,BW-V5402,model_base_variant,2023.0,1.0,6189.0,Pune,2026-10-11,Bike,BW-M1374,142235.8208276072
+royalenfield|hunter 350,BD-V4785,model_base_variant,2025.0,1.0,18565.0,Pune,2026-10-11,Bike,BD-M1292,139768.51015681538
+tvs|scooty streak,BW-V497,matched_variant,2013.0,1.0,52145.0,Pune,2026-10-11,Scooter,BW-M381,13427.667408380428
+hero|splendor plus,IBB214056001,model_base_variant,2020.0,1.0,16676.0,Pune,2026-10-11,Bike,IBB214056,36919.307948516696
+royalenfield|classic 350,BW-V4542,model_base_variant,2016.0,1.0,,Pune,2026-10-11,Bike,BW-M78,103379.1934469616
+bmw|g 310 rr,BD-V3181,model_base_variant,2024.0,1.0,,Pune,2026-10-11,Bike,BD-M1762,199078.01480331065
+triumph|speed 400,BW-V11437,matched_variant,2023.0,1.0,,Pune,2026-10-11,Bike,BW-M2233,158026.52892796183
+royalenfield|himalayan,BW-V892,model_base_variant,2020.0,1.0,52281.0,Pune,2026-10-12,Bike,BW-M673,97237.13120246716
+honda|activa 5g,BW-V4747,model_base_variant,2019.0,1.0,3132.0,Pune,2026-10-12,Scooter,BW-M1142,32901.797815210004
+royalenfield|classic 350,IBB230025001,model_base_variant,2020.0,1.0,59343.0,Pune,2026-10-12,Bike,IBB230025,133066.8647271167
+hero|splendor ismart,BW-V755,model_base_variant,2015.0,1.0,82531.0,Pune,2026-10-12,Bike,BW-M402,15278.48348825311
+hero|splendor plus,IBB214056001,model_base_variant,2022.0,1.0,28307.0,Pune,2026-10-12,Bike,IBB214056,43612.5123311731
+yamaha|fz s v3,IBB238055001,model_base_variant,2021.0,1.0,29461.0,Pune,2026-10-12,Bike,IBB238055,51106.6928636399
+honda|activa 125,IBB217097003,matched_variant,2023.0,1.0,26007.0,Pune,2026-10-12,Scooter,IBB217097,50682.0867502086
+yamaha|r 15 v3,BW-V4833,model_base_variant,2018.0,1.0,18878.0,Pune,2026-10-12,Bike,BW-M1089,66369.87343530248
+royalenfield|himalayan,IBB230031001,model_base_variant,2024.0,1.0,,Pune,2026-09-27,Bike,IBB230031,151670.63277335968
+honda|activa,BD-V4655,matched_variant,2024.0,1.0,,Pune,2026-10-13,Bike,BD-M1027,55486.94708224489
+royalenfield|bullet 350,BW-V5370,matched_variant,2018.0,1.0,20948.0,Pune,2026-10-13,Bike,BW-M81,101761.49623379429
+honda|activa 6g,IBB217067003,model_base_variant,2022.0,1.0,52005.0,Pune,2026-10-13,Bike,IBB217067,44054.79912136822
+bajaj|pulsar n 160,IBB206089001,model_base_variant,2023.0,1.0,45000.0,Pune,2026-10-13,Bike,IBB206089,59967.10030210228
+yezdi|adventure,BD-V5548,closest_variant_unconfirmed,2026.0,1.0,,Pune,2026-10-13,Bike,BD-M2436,153197.99867296222
+suzuki|access 125,IBB231057001,model_base_variant,2023.0,1.0,38448.0,Pune,2026-10-13,Scooter,IBB231057,55319.79309798394
+triumph|scrambler 400 x,BW-V11439,matched_variant,2024.0,1.0,9436.0,Pune,2026-10-13,Bike,BW-M2235,203539.18539853816
+royalenfield|bullet 350,IBB230029002,matched_variant,2021.0,1.0,2887.0,Pune,2026-10-13,Bike,IBB230029,125646.67656874465
+hero|pleasure,BW-V98,model_base_variant,2012.0,1.0,12730.0,Pune,2026-10-13,Scooter,BW-M52,13486.057653059072
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,25678.0,Pune,2026-10-13,Bike,BW-M78,125030.1941970022
+royalenfield|classic 350,BW-V5035,closest_variant_unconfirmed,2016.0,1.0,58902.0,Pune,2026-10-14,Bike,BW-M78,90076.08802483205
+honda|dream yuga,BW-V108,model_base_variant,2016.0,1.0,40877.0,Pune,2026-10-14,Bike,BW-M58,20616.76729183991
+royalenfield|classic 350,BW-V5035,closest_variant_unconfirmed,2018.0,1.0,18193.0,Pune,2026-10-14,Bike,BW-M78,112623.32327109376
+ktm|390 duke,BW-V4508,model_base_variant,2017.0,1.0,17805.0,Pune,2026-10-14,Bike,BW-M1004,97462.74037033698
+bajaj|avenger street 160,BW-V5082,model_base_variant,2022.0,1.0,27729.0,Pune,2026-10-14,Bike,BW-M1278,49048.293976771085
+honda|activa i,BW-V465,model_base_variant,2017.0,1.0,16425.0,Pune,2026-10-15,Scooter,BW-M349,22811.119031685324
+royalenfield|himalayan,IBB230031001,model_base_variant,2024.0,1.0,23535.0,Pune,2026-10-15,Bike,IBB230031,149483.954066712
+tvs|jupiter 125,BD-V2962,model_base_variant,2023.0,1.0,29727.0,Pune,2026-10-15,Scooter,BD-M1503,48822.42413228124
+tvs|jupiter 125,IBB235069001,model_base_variant,2022.0,1.0,26414.0,Pune,2026-10-15,Scooter,IBB235069,45196.96835796622
+royalenfield|himalayan,IBB230031001,model_base_variant,2024.0,1.0,30204.0,Pune,2026-10-15,Bike,IBB230031,148407.05808765153
+yamaha|mt 15,IBB238075005,model_base_variant,2022.0,1.0,31751.0,Pune,2026-10-15,Bike,IBB238075,99506.5151382946
+tvs|ntorq 125,IBB235017002,model_base_variant,2018.0,1.0,47681.0,Pune,2026-10-15,Scooter,IBB235017,24341.11158312694
+bajaj|pulsar ns 200,IBB206076001,model_base_variant,2020.0,1.0,61538.0,Pune,2026-10-15,Bike,IBB206076,54584.903178206434
+royalenfield|interceptor 650,BD-V2805,model_base_variant,2022.0,1.0,35695.0,Pune,2026-10-15,Bike,BD-M845,195383.76560751811
+bajaj|dominar 250,IBB206068001,matched_variant,2020.0,2.0,36066.0,Pune,2026-10-15,Bike,IBB206068,61336.104814666585
+honda|activa 5g,BW-V4747,model_base_variant,2018.0,1.0,17356.0,Pune,2026-10-16,Scooter,BW-M1142,29695.341108205062
+tvs|jupiter grande,BW-V4858,model_base_variant,2018.0,1.0,57916.0,Pune,2026-10-16,Scooter,BW-M1184,23976.56272092774
+hero|splendor plus,IBB214056001,model_base_variant,2023.0,1.0,24246.0,Pune,2026-10-16,Bike,IBB214056,46600.46719553039
+hero|splendor plus,IBB214056001,model_base_variant,2023.0,1.0,21285.0,Pune,2026-10-16,Bike,IBB214056,46657.10758004856
+bajaj|pulsar 180,BW-V5649,model_base_variant,2020.0,1.0,95565.0,Pune,2026-10-18,Bike,BW-M1507,35917.51285560245
+hero|splendor plus,IBB214030010,model_base_variant,2015.0,1.0,30665.0,Pune,2026-10-18,Bike,IBB214030,23387.1350866764
+honda|activa 6g,IBB217067003,model_base_variant,2021.0,1.0,20019.0,Pune,2026-10-18,Bike,IBB217067,42922.13431012764
+royalenfield|continental gt 650,BW-V4667,model_base_variant,2024.0,1.0,17038.0,Pune,2026-10-18,Bike,BW-M1086,286771.2707297297
+honda|activa 3g,BW-V806,matched_variant,2016.0,1.0,44827.0,Pune,2026-10-18,Scooter,BW-M615,21393.936678639177
+royalenfield|hunter 350,BD-V4785,model_base_variant,2024.0,1.0,8866.0,Pune,2026-10-18,Bike,BD-M1292,133472.77331652743
+royalenfield|hunter 350,BW-V10677,model_base_variant,2023.0,1.0,13440.0,Pune,2026-10-18,Bike,BW-M1885,125216.20943308112
+royalenfield|classic 350,BD-V2937,model_base_variant,2023.0,1.0,25877.0,Pune,2026-10-18,Bike,BD-M1030,161788.90890351872
+ktm|200 duke,IBB222026001,model_base_variant,2022.0,1.0,38222.0,Pune,2026-10-18,Bike,IBB222026,110420.63162267824
+tvs|apache rtr 160 4v,IBB235070006,model_base_variant,2021.0,1.0,59124.0,Pune,2026-10-18,Bike,IBB235070,45876.98502419419
+bajaj|avenger 220 cruise,IBB206077001,model_base_variant,2022.0,1.0,2367.0,Pune,2026-10-19,Bike,IBB206077,56165.18752237801
+bajaj|pulsar rs 200,IBB206070001,model_base_variant,2022.0,1.0,9038.0,Pune,2026-10-19,Bike,IBB206070,83389.23383359326
+honda|activa,BD-V4655,matched_variant,2024.0,1.0,20968.0,Pune,2026-10-19,Scooter,BD-M1027,55369.83709297637
+yamaha|r 15 v4,IBB238070005,model_base_variant,2022.0,1.0,23178.0,Pune,2026-10-19,Bike,IBB238070,104086.21737365786
+honda|activa,BD-V4656,matched_variant,2023.0,1.0,14200.0,Pune,2026-10-19,Scooter,BD-M1027,51264.125053197175
+hero|xpulse 200,BW-V539,model_base_variant,2023.0,1.0,39285.0,Pune,2026-10-19,Bike,BW-M424,69306.17221049716
+royalenfield|thunderbird 350,BW-V4931,matched_variant,2018.0,1.0,35825.0,Pune,2026-10-19,Bike,BW-M215,51882.8561799125
+triumph|speed 400,BW-V11437,matched_variant,2023.0,1.0,17514.0,Pune,2026-10-19,Bike,BW-M2233,156333.56075267994
+jawa|42,BW-V5352,matched_variant,2021.0,1.0,9258.0,Pune,2026-09-27,Bike,BW-M1232,67967.01751317162
+honda|activa 125,BW-V484,model_base_variant,2017.0,1.0,42284.0,Pune,2026-10-20,Bike,BW-M354,26026.17247201269
+honda|activa 125,IBB217097001,matched_variant,2022.0,1.0,51112.0,Pune,2026-10-20,Scooter,IBB217097,43212.1113011601
+tvs|jupiter,BW-V10987,matched_variant,2019.0,1.0,59348.0,Pune,2026-10-20,Bike,BW-M389,32410.10825825003
+ktm|200 duke,IBB222026001,model_base_variant,2023.0,1.0,18747.0,Pune,2026-10-20,Bike,IBB222026,120765.15238300076
+ktm|200 duke,BW-V127,model_base_variant,2013.0,1.0,55241.0,Pune,2026-10-20,Bike,BW-M72,36863.338964418384
+royalenfield|bullet 350,BD-V2678,model_base_variant,2023.0,1.0,16097.0,Pune,2026-10-21,Bike,BD-M1501,149051.23226161647
+honda|shine,BD-V4637,matched_variant,2022.0,1.0,38900.0,Pune,2026-10-21,Bike,BD-M1294,48275.699097755554
+triumph|scrambler 400 x,BW-V11439,matched_variant,2025.0,1.0,16945.0,Pune,2026-10-21,Bike,BW-M2235,210062.62256419184
+hero|splendor plus,IBB214056001,model_base_variant,2024.0,1.0,10724.0,Pune,2026-10-21,Bike,IBB214056,51265.7995266015
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,54671.0,Pune,2026-10-22,Bike,BW-M78,120246.19523793412
+royalenfield|classic 350,BW-V4542,model_base_variant,2018.0,1.0,36886.0,Pune,2026-10-22,Bike,BW-M78,122553.41369392347
+suzuki|access 125,IBB231047007,matched_variant,2021.0,1.0,35309.0,Pune,2026-10-22,Scooter,IBB231047,43660.79089674896
+suzuki|burgman street 125,IBB231043001,model_base_variant,2022.0,1.0,37741.0,Pune,2026-10-22,Scooter,IBB231043,58529.87419817331
+hero|splendor plus xtec,BD-V4744,model_base_variant,2024.0,1.0,30760.0,Pune,2026-10-22,Bike,BD-M1957,46652.6543991101
+royalenfield|classic 350,IBB230023002,matched_variant,2019.0,1.0,54149.0,Pune,2026-10-22,Bike,IBB230023,127160.36702158436
+bajaj|avenger street 150,BW-V853,matched_variant,2016.0,1.0,,Pune,2026-10-22,Bike,BW-M643,20858.593159818676
+triumph|scrambler 400 x,BW-V11439,matched_variant,2024.0,1.0,3501.0,Pune,2026-10-23,Bike,BW-M2235,203829.1223016984
+triumph|speed t 4,BW-V18355,matched_variant,2024.0,1.0,14215.0,Pune,2026-10-23,Bike,BW-M2999,139785.64986386316
+royalenfield|meteor 350,BW-V5402,model_base_variant,2021.0,2.0,26112.0,Pune,2026-10-23,Bike,BW-M1374,120723.16328139653
+royalenfield|hunter 350,BW-V10677,model_base_variant,2023.0,1.0,27954.0,Pune,2026-10-23,Bike,BW-M1885,124198.85656740647
+royalenfield|interceptor 650,BD-V2805,model_base_variant,2023.0,1.0,,Pune,2026-10-23,Bike,BD-M845,222575.24358969263
+royalenfield|hunter 350,BD-V4785,model_base_variant,2025.0,1.0,13239.0,Pune,2026-10-23,Bike,BD-M1292,140026.25453760338
+royalenfield|classic 350,BD-V2937,model_base_variant,2024.0,1.0,17229.0,Pune,2026-10-23,Bike,BD-M1030,172822.49485342024
+honda|activa 3g,BW-V806,matched_variant,2016.0,1.0,54554.0,Pune,2026-10-25,Scooter,BW-M615,21022.63195785308
+suzuki|vstrom sx,BD-V4508,matched_variant,2023.0,1.0,,Pune,2026-10-25,Bike,BD-M2310,112152.38682919164
+ktm|390 adventure,BW-V9507,model_base_variant,2023.0,1.0,10652.0,Pune,2026-10-25,Bike,BW-M1805,201961.30553935905
+hero|maestro,BW-V751,closest_variant_unconfirmed,2016.0,1.0,36807.0,Pune,2026-10-25,Scooter,BW-M51,17521.216508776135
+suzuki|burgman street 125,IBB231043001,model_base_variant,2025.0,1.0,19345.0,Pune,2026-10-25,Bike,IBB231043,69568.94175233548
+royalenfield|classic 350,BD-V2937,model_base_variant,2026.0,1.0,15.0,Pune,2026-10-25,Bike,BD-M1030,188541.48180519897
+honda|activa 3g,BW-V806,matched_variant,2015.0,1.0,30127.0,Pune,2026-10-25,Scooter,BW-M615,19932.59741058204
+hero|xpulse 200 4v,BD-V2957,model_base_variant,2022.0,1.0,15479.0,Pune,2026-10-26,Bike,BD-M902,82311.72522188508
+tvs|jupiter,IBB235014004,matched_variant,2023.0,1.0,,Pune,2026-10-26,Scooter,IBB235014,51594.77976157325
+hero|maestro,BW-V751,closest_variant_unconfirmed,2014.0,1.0,,Pune,2026-10-26,Scooter,BW-M51,15286.969649833129
+royalenfield|hunter 350,BW-V10677,model_base_variant,2023.0,1.0,19077.0,Pune,2026-10-27,Bike,BW-M1885,124902.00091050209
+royalenfield|classic 350,BD-V2937,model_base_variant,2025.0,1.0,22359.0,Pune,2026-10-27,Bike,BD-M1030,180728.23768446565
+yamaha|r 15,IBB238077001,matched_variant,2023.0,1.0,,Pune,2026-10-27,Bike,IBB238077,116767.21164424693
+bajaj|pulsar ns 200,IBB206076001,model_base_variant,2024.0,1.0,5715.0,Pune,2026-10-27,Bike,IBB206076,88674.47785981532
+royalenfield|hunter 350,BD-V4785,model_base_variant,2025.0,1.0,,Pune,2026-10-27,Bike,BD-M1292,141047.2238093104
+honda|activa,BD-V4655,matched_variant,2024.0,1.0,57254.0,Pune,2026-10-27,Scooter,BD-M1027,52053.32840433436
+yamaha|fz s fi v4,BD-V3993,model_base_variant,2023.0,1.0,,Pune,2026-10-28,Bike,BD-M2045,63372.272480985455
+royalenfield|bullet 350,IBB230029003,model_base_variant,2021.0,1.0,18085.0,Pune,2026-10-28,Bike,IBB230029,126638.46131247672
+royalenfield|meteor 350,BW-V5402,model_base_variant,2024.0,1.0,,Pune,2026-10-28,Bike,BW-M1374,152448.26198071637
+honda|activa,BD-V4562,matched_variant,2023.0,1.0,38935.0,Pune,2026-10-28,Bike,BD-M1027,48520.76671037895
+tvs|jupiter,BW-V10987,matched_variant,2019.0,1.0,23378.0,Pune,2026-10-28,Scooter,BW-M389,33033.509965301666
+royalenfield|classic 350,IBB230023002,matched_variant,2019.0,1.0,,Pune,2026-10-29,Bike,IBB230023,132306.74777389193
+yamaha|fz s fi v4,BD-V3993,model_base_variant,2024.0,1.0,21444.0,Pune,2026-10-29,Bike,BD-M2045,68482.64242106088
+jawa|42,BW-V5352,matched_variant,2021.0,1.0,40477.0,Pune,2026-10-29,Bike,BW-M1232,64948.63840594551
+triumph|speed 400,BW-V18357,matched_variant,2024.0,1.0,11832.0,Pune,2026-10-29,Bike,BW-M3001,174314.34824850116
+royalenfield|hunter 350,BD-V4785,model_base_variant,2024.0,1.0,19968.0,Pune,2026-10-29,Bike,BD-M1292,132955.7714289991
+tvs|jupiter,IBB235046002,model_base_variant,2022.0,1.0,,Pune,2026-10-29,Scooter,IBB235046,44419.39725734519
+tvs|jupiter 125,IBB235069001,model_base_variant,2022.0,1.0,53290.0,Pune,2026-10-29,Scooter,IBB235069,42223.29002292756
+royalenfield|interceptor 650,BD-V2805,model_base_variant,2021.0,1.0,,Pune,2026-10-26,Bike,BD-M845,179723.5100542342

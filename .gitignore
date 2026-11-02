@@ -1,0 +1,6 @@
+# login state: created per deployment (python -m app.manage_users / TWR_ADMIN_PASSWORD), never committed
+users.json
+.jwt_secret
+__pycache__/
+*.pyc
+catboost_info/

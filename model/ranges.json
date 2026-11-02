@@ -1,0 +1,52 @@
+{
+  "Pure MAXFIT + Optuna settings": {
+    "calibration": "1066 holdout bikes (20%, seed 42), retrained on the other 80% with 439 trees",
+    "levels": {
+      "80": {
+        "log_half_width_by_age_band": {
+          "0-3 yrs": 0.15522928574894024,
+          "3-6 yrs": 0.1597998249855808,
+          "6-9 yrs": 0.23407820992900613,
+          "9+ yrs": 0.24436105520984586
+        },
+        "log_half_width_fallback": 0.19393709844943885,
+        "calibration_bikes_by_band": {
+          "0-3 yrs": 246,
+          "3-6 yrs": 336,
+          "6-9 yrs": 277,
+          "9+ yrs": 207
+        }
+      },
+      "90": {
+        "log_half_width_by_age_band": {
+          "0-3 yrs": 0.2384999458729389,
+          "3-6 yrs": 0.23318423791175402,
+          "6-9 yrs": 0.33169355678196677,
+          "9+ yrs": 0.35936523131410364
+        },
+        "log_half_width_fallback": 0.2863704467581261,
+        "calibration_bikes_by_band": {
+          "0-3 yrs": 246,
+          "3-6 yrs": 336,
+          "6-9 yrs": 277,
+          "9+ yrs": 207
+        }
+      },
+      "95": {
+        "log_half_width_by_age_band": {
+          "0-3 yrs": 0.37895827776337626,
+          "3-6 yrs": 0.3109127027457454,
+          "6-9 yrs": 0.4728478378181097,
+          "9+ yrs": 0.41303122221999156
+        },
+        "log_half_width_fallback": 0.3671833212530379,
+        "calibration_bikes_by_band": {
+          "0-3 yrs": 246,
+          "3-6 yrs": 336,
+          "6-9 yrs": 277,
+          "9+ yrs": 207
+        }
+      }
+    }
+  }
+}

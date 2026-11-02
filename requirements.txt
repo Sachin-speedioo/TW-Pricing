@@ -1,0 +1,9 @@
+# TW Retail pricing API - everything the app needs (tested with Python 3.14).
+# catboost / pandas / numpy are pinned to the versions the model was trained and checked with (python -m app.selftest).
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+PyJWT==2.15.1
+python-multipart==0.0.33
+catboost==1.2.10
+pandas==3.0.6
+numpy==2.5.3

@@ -1,0 +1,25 @@
+{
+  "name": "Pure MAXFIT + Optuna settings",
+  "model": "pure_optuna.cbm",
+  "model_config": "pure_optuna.json",
+  "ranges": "ranges.json",
+  "ranges_key": "Pure MAXFIT + Optuna settings",
+  "price_band_inr": 5000,
+  "data": {
+    "catalogue": "catalogue.csv",
+    "popularity": "popularity.csv",
+    "training_data": "training_data.csv",
+    "selftest_eval": "selftest_eval.csv"
+  },
+  "exported": "2026-11-02",
+  "source": "experiments/pure_data/models/pure_optuna (scripts/pure_data_model.py)",
+  "sha256": {
+    "pure_optuna.cbm": "afc7db98168c8895525130ef7563fafdaf8e6c90e76a7a9b40f4d22d7e6bd8af",
+    "pure_optuna.json": "95cb8ee25c4f044108b4c8c627c66ebd6c3ea3f26bc5f9afa24cc9a83c90e21e",
+    "ranges.json": "e6a63f9509eaee92efb3af38590aebdda4610df17e5e34a51fca15a127ad06dc",
+    "catalogue.csv": "ae32a108917e869b568f498956a19b17a4f69b49df7e219bf550e1e23d62b70c",
+    "popularity.csv": "4c5a4f223f8a520d44ea1f6c45f3e533c73a311982108ad3d937381a657fb365",
+    "training_data.csv": "3b8525fec106252a53a0ec045c99d43a141352c94962c1bc2fede0ba5471734c",
+    "selftest_eval.csv": "a76381d30fd76de833be6e64ab1209ae182f6f2e9f6491b7ae0a2e83e3e521bb"
+  }
+}
