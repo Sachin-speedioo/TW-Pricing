@@ -35,7 +35,11 @@ def _secret() -> str:
         return os.environ["TWR_JWT_SECRET"]
     if not SECRET_FILE.exists():
         SECRET_FILE.parent.mkdir(parents=True, exist_ok=True)
-        SECRET_FILE.write_text(secrets.token_urlsafe(48), encoding="utf-8")
+        try:                                   # exclusive create: with several workers the first one's secret wins
+            with open(SECRET_FILE, "x", encoding="utf-8") as f:
+                f.write(secrets.token_urlsafe(48))
+        except FileExistsError:
+            pass
     return SECRET_FILE.read_text(encoding="utf-8").strip()
 
 

@@ -1,0 +1,15 @@
+# keep the image to code + model + data; never copy logins or local env files into it
+.git
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose.yml
+.env
+.env.*
+users.json
+.jwt_secret
+__pycache__/
+*.pyc
+catboost_info/
+.venv/
+venv/

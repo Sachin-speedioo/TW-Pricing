@@ -4,3 +4,5 @@ users.json
 __pycache__/
 *.pyc
 catboost_info/
+# local settings for docker compose (copy of .env.example with real values)
+.env

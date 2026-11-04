@@ -29,6 +29,32 @@ logins and tokens travel in the requests).
 From the parent folder (when the folder is named `app`) the package form also works: `python -m uvicorn app.main:app`,
 `python -m app.selftest`, `python -m app.manage_users ...`.
 
+### Docker
+
+```bash
+cp .env.example .env                                   # set TWR_ADMIN_PASSWORD (first user, min. 8 characters)
+docker compose up -d --build                           # builds the image, starts it on http://localhost:8000
+docker compose exec pricing-api python selftest.py     # optional, ~3 min
+```
+
+Or without compose:
+
+```bash
+docker build -t tw-pricing-api .
+docker run -d --name tw-pricing-api -p 8000:8000 -v twr-state:/state -e TWR_ADMIN_PASSWORD=<password> tw-pricing-api
+```
+
+- The image (`python:3.14-slim` + CatBoost and its scientific-Python dependencies) holds the code, model and data; it runs as a non-root user and
+  has a health check on `/health`.
+- Logins live in the `/state` volume (`twr-state`): they survive rebuilds and restarts, and are never baked into the image
+  (`.dockerignore` keeps `users.json`, `.jwt_secret` and `.env` out). `TWR_ADMIN_PASSWORD` only creates the first user while
+  the volume has no users; later it is ignored.
+- Users: `docker compose exec pricing-api python manage_users.py add <name>` (or `passwd`, `remove`, `list`).
+- Port: `HOST_PORT` in `.env` changes the port on the host; platforms that set `PORT` (Cloud Run, Render, ...) are followed
+  inside the container.
+- New model: update `model/` and `data/` (see **Updating the model**), then `docker compose up -d --build`.
+- Put HTTPS in front (a reverse proxy or the platform's load balancer) before exposing it beyond a trusted network.
+
 ### Configuration
 
 Nothing needs configuring: every path defaults to this folder. Environment variables override them (`settings.py`):
@@ -59,6 +85,7 @@ Nothing needs configuring: every path defaults to this folder. Environment varia
 | `data/popularity.csv` | popularity class per model |
 | `data/training_data.csv` | the model's 5,331 training bikes (features + price): training-bike counts, categories, cities, training-median reference |
 | `data/selftest_eval.csv` | the 196 evaluation bikes and their evaluated prices (no personal data), for the self-test |
+| `Dockerfile`, `.dockerignore`, `docker-compose.yml`, `.env.example` | container build and run (see **Docker**) |
 | `users.json`, `.jwt_secret` | created at first use; git-ignored, never commit them |
 
 ### Updating the model

@@ -1,0 +1,20 @@
+# docker compose up -d --build        (settings come from .env next to this file: copy .env.example to .env)
+# docker compose logs -f              docker compose down        (the logins in the twr-state volume are kept)
+services:
+  pricing-api:
+    build: .
+    image: tw-pricing-api:latest
+    container_name: tw-pricing-api
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    environment:
+      TWR_ADMIN_USER: ${TWR_ADMIN_USER:-admin}
+      TWR_ADMIN_PASSWORD: ${TWR_ADMIN_PASSWORD:-}
+      TWR_JWT_SECRET: ${TWR_JWT_SECRET:-}
+      TWR_TOKEN_MINUTES: ${TWR_TOKEN_MINUTES:-480}
+    volumes:
+      - twr-state:/state
+    restart: unless-stopped
+
+volumes:
+  twr-state:

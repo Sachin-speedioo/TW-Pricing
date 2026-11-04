@@ -1,0 +1,1536 @@
+{
+  "info": {
+    "name": "TW Retail pricing API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Procurement price for a used two-wheeler (app/ FastAPI service, model **Pure MAXFIT + Optuna settings**, exported 2026-11-02).\n\n**Start**\n1. Import this collection and `TW_Retail_Pricing_API.postman_environment.json`; pick the environment *TW Retail pricing API - local*.\n2. In the environment, put the password in **Current value** of `password` (Current values are not shared or exported).\n3. Start the server (`python -m uvicorn app.main:app --port 8000`, or `docker compose up`) and send any request. The collection logs in by itself (collection pre-request script) and keeps the token for its lifetime.\n\n**Order** (as the web form): Mfg years → Makes → Models → Variants → Cities → Predict price. Copy the chosen values into the collection variables below; the defaults are a working example (Royal Enfield Classic 350, Standard, 2020, Pune).\n\n| Variable | Default | |\n|---|---|---|\n| `baseUrl` | `http://127.0.0.1:8000` | server address |\n| `username` | `admin` | login user |\n| `password` | `` | set it in the environment's Current value |\n| `token` | `` | set by the login (automatic) |\n| `tokenExpiresAt` | `` | set by the login (automatic) |\n| `mfg_year` | `2020` | from Mfg years |\n| `make` | `Royal Enfield` | from Makes |\n| `model_key` | `royalenfield|classic 350` | from Models (not the name) |\n| `variant_id` | `BW-V136` | from Variants |\n| `city` | `Pune` | from Cities |\n\nErrors: `401` = no / expired token or wrong login; `422` = bad input, the reason is in `detail`.\nRun the whole collection (Runner) to test a server: every request has tests, the error cases expect their error codes.\nBuilt by `scripts/build_postman_collection.py`; example responses are real responses of the app."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Logs in when there is no token or it has expired; the token goes into the collection variable 'token'.",
+          "// Skipped for the login and health requests and for requests set to 'No Auth'.",
+          "const path = pm.request.url.getPath();",
+          "const auth = pm.request.auth;",
+          "const skip = path === '/auth/token' || path === '/health' || (auth && auth.type === 'noauth');",
+          "const expiresAt = Number(pm.collectionVariables.get('tokenExpiresAt') || 0);",
+          "if (!skip && (!pm.collectionVariables.get('token') || Date.now() >= expiresAt)) {",
+          "    const password = pm.variables.get('password');",
+          "    if (!password) {",
+          "        console.warn('Set the password variable (environment, Current value) to log in automatically.');",
+          "    } else {",
+          "        pm.sendRequest({",
+          "            url: pm.variables.replaceIn('{{baseUrl}}/auth/token'),",
+          "            method: 'POST',",
+          "            header: { 'Content-Type': 'application/x-www-form-urlencoded' },",
+          "            body: { mode: 'urlencoded', urlencoded: [",
+          "                { key: 'username', value: pm.variables.get('username') },",
+          "                { key: 'password', value: password }",
+          "            ] }",
+          "        }, (err, res) => {",
+          "            if (err || res.code !== 200) {",
+          "                console.error('Login failed', err || res.code + ' ' + res.text());",
+          "                return;",
+          "            }",
+          "            const j = res.json();",
+          "            pm.collectionVariables.set('token', j.access_token);",
+          "            pm.collectionVariables.set('tokenExpiresAt', String(Date.now() + (j.expires_in - 60) * 1000));",
+          "        });",
+          "    }",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "username",
+      "value": "admin",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tokenExpiresAt",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "mfg_year",
+      "value": "2020",
+      "type": "string"
+    },
+    {
+      "key": "make",
+      "value": "Royal Enfield",
+      "type": "string"
+    },
+    {
+      "key": "model_key",
+      "value": "royalenfield|classic 350",
+      "type": "string"
+    },
+    {
+      "key": "variant_id",
+      "value": "BW-V136",
+      "type": "string"
+    },
+    {
+      "key": "city",
+      "value": "Pune",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Status and login",
+      "item": [
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "No login needed. Shows the served model and the ± band."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"status\": \"ok\",\n  \"model\": \"Pure MAXFIT + Optuna settings\",\n  \"model_exported\": \"2026-11-02\",\n  \"price_band_inr\": 5000\n}"
+            }
+          ]
+        },
+        {
+          "name": "Log in (get token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('logged in', () => pm.response.to.have.status(200));",
+                  "if (pm.response.code === 200) {",
+                  "    const j = pm.response.json();",
+                  "    pm.collectionVariables.set('token', j.access_token);",
+                  "    pm.collectionVariables.set('tokenExpiresAt', String(Date.now() + (j.expires_in - 60) * 1000));",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "token"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "OAuth2 password form: username + password → JWT (HS256), valid 8 hours by default (TWR_TOKEN_MINUTES). The test script stores the token in the collection variable `token`; every other request sends it as `Authorization: Bearer {{token}}`.\n\nNot needed by hand: the collection logs in by itself when the token is missing or expired."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "token"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "username",
+                      "value": "{{username}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "{{password}}",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"access_token\": \"eyJhbGciOiJIUzI1NiIs...<redacted>\",\n  \"token_type\": \"bearer\",\n  \"expires_in\": 28800\n}"
+            }
+          ]
+        },
+        {
+          "name": "Who am I",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('logged-in user', () => pm.expect(pm.response.json().username).to.eql(pm.variables.get('username')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "The user the token belongs to."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"username\": \"admin\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Dropdowns (mfg year → make → model → variant)",
+      "item": [
+        {
+          "name": "Mfg years",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('mfg_year is in the list', () => pm.expect(pm.response.json()).to.include(Number(pm.variables.get('mfg_year'))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/years",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "years"
+              ],
+              "query": [
+                {
+                  "key": "model_key",
+                  "value": "{{model_key}}",
+                  "description": "optional: only this model's years",
+                  "disabled": true
+                },
+                {
+                  "key": "variant_id",
+                  "value": "{{variant_id}}",
+                  "description": "optional: only this variant's years",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Mfg years the form offers, newest first. Tick `model_key` / `variant_id` to limit it to a model or variant."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/years",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "years"
+                  ],
+                  "query": [
+                    {
+                      "key": "model_key",
+                      "value": "{{model_key}}",
+                      "description": "optional: only this model's years",
+                      "disabled": true
+                    },
+                    {
+                      "key": "variant_id",
+                      "value": "{{variant_id}}",
+                      "description": "optional: only this variant's years",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  2026,\n  2025,\n  2024,\n  2023,\n  2022,\n  2021,\n  2020,\n  2019,\n  2018,\n  2017,\n  2016,\n  2015,\n  2014,\n  2013,\n  2012,\n  2011,\n  2010,\n  2009,\n  2008,\n  2007,\n  2006,\n  2005,\n  2004,\n  2003,\n  2002,\n  2001,\n  2000,\n  1999,\n  1998,\n  1997,\n  1996,\n  1995,\n  1994,\n  1993,\n  1992,\n  1991,\n  1990\n]"
+            }
+          ]
+        },
+        {
+          "name": "Mfg years of a variant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('mfg_year is in the list', () => pm.expect(pm.response.json()).to.include(Number(pm.variables.get('mfg_year'))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/years?model_key={{model_key}}&variant_id={{variant_id}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "years"
+              ],
+              "query": [
+                {
+                  "key": "model_key",
+                  "value": "{{model_key}}",
+                  "description": "from Models"
+                },
+                {
+                  "key": "variant_id",
+                  "value": "{{variant_id}}",
+                  "description": "from Variants (optional)"
+                }
+              ]
+            },
+            "description": "The years in which this variant was on sale (1 year before launch to 1 year after discontinuation)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/years?model_key={{model_key}}&variant_id={{variant_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "years"
+                  ],
+                  "query": [
+                    {
+                      "key": "model_key",
+                      "value": "{{model_key}}",
+                      "description": "from Models"
+                    },
+                    {
+                      "key": "variant_id",
+                      "value": "{{variant_id}}",
+                      "description": "from Variants (optional)"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  2022,\n  2021,\n  2020,\n  2019,\n  2018,\n  2017,\n  2016,\n  2015,\n  2014,\n  2013,\n  2012,\n  2011,\n  2010,\n  2009,\n  2008\n]"
+            }
+          ]
+        },
+        {
+          "name": "Makes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('make is in the list', () => pm.expect(pm.response.json()).to.include(pm.variables.get('make')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/makes?year={{mfg_year}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "makes"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "{{mfg_year}}",
+                  "description": "optional: only makes with a model on sale that year"
+                }
+              ]
+            },
+            "description": "Makes with a model on sale in `year` (all makes without `year`). Put the chosen one in the variable `make`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/makes?year={{mfg_year}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "makes"
+                  ],
+                  "query": [
+                    {
+                      "key": "year",
+                      "value": "{{mfg_year}}",
+                      "description": "optional: only makes with a model on sale that year"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  \"22Kymco\",\n  \"22Motors\",\n  \"Aahana\",\n  \"AMO Electric\",\n  \"Ampere Electric\",\n  \"Aprilia\",\n  \"Ather\",\n  \"Atumobile\",\n  \"Avan Motors\",\n  \"Avantura Choppers\",\n  \"Avera\",\n  \"Avon\",\n  \"Bajaj\",\n  \"Battre\",\n  \"Benelli\",\n  \"Benling\",\n  \"BGauss\",\n  \"BMW\",\n  \"Boom Motors\",\n  \"Bounce\",\n  \"Carberry\",\n  \"CFMoto\",\n  \"Cleveland\",\n  \"Crayon\",\n  \"Dacus\",\n  \"DAO\",\n  \"Deltic\",\n  \"Deroz\",\n  \"Detel Ev\",\n  \"Ducati\",\n  \"EeVe\",\n  \"Eider\",\n  \"EMotorad\",\n  \"Essel Energy\",\n  \"Evolet\",\n  \"Evtric\",\n  \"Ezyride\",\n  \"F.B Mondial\",\n  \"Geliose\",\n  \"Gemopai\",\n  \"Gowel\",\n  \"Gravton Motors\",\n  \"Harley-Davidson\",\n  \"HCD India\",\n  \"Hero\",\n  \"Hero Electric\",\n  \"Honda\",\n  \"Hop Electric\",\n  \"Husqvarna Motorcycles\",\n  \"Hyosung\",\n  \"Indian\",\n  \"iVOOMi\",\n  \"Jawa\",\n  \"Joy e-bike\",\n  \"Kabira Mobility\",\n  \"Kawasaki\",\n  \"Komaki\",\n  \"KTM\",\n  \"Liions Elektrik Solutions\",\n  \"Lohia\",\n  \"M2Go\",\n  \"Mahindra\",\n  \"Merico\",\n  \"Miracle 5\",\n  \"Moto Guzzi\",\n  \"Mv Agusta\",\n  \"NDS Eco Motors\",\n  \"Norton\",\n  \"Odysse Electric\",\n  \"Okaya Electric\",\n  \"Okinawa\",\n  \"Ola Electric\",\n  \"One Electric Motorcycles\",\n  \"One Moto\",\n  \"OPG Mobility\",\n  \"Palatino\",\n  \"Poise\",\n  \"Polarity Smart\",\n  \"Prevail\",\n  \"PURE EV\",\n  \"Raftaar\",\n  \"Regal Raptor\",\n  \"Revolt\",\n  \"Royal Enfield\",\n  \"Rugged\",\n  \"Stella Moto\",\n  \"SUPER ECO\",\n  \"Suzuki\",\n  \"SVITCH BIKE\",\n  \"Svm\",\n  \"Swm\",\n  \"Techo Electra\",\n  \"Tnr\",\n  \"Toutche Electric\",\n  \"Triumph\",\n  \"Tunwal\",\n  \"TVS\",\n  \"Ujaas Energy\",\n  \"Ultra Motors\",\n  \"Ultraviolette\",\n  \"Um\",\n  \"Varcas\",\n  \"Vespa\",\n  \"Viertric\",\n  \"Vtech\",\n  \"Warivo Motors\",\n  \"White Carbon Motors\",\n  \"Yamaha\",\n  \"YObykes\",\n  \"Yogo\",\n  \"YUKIE\"\n]"
+            }
+          ]
+        },
+        {
+          "name": "Models of a make",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('model_key is in the list', () => pm.expect(pm.response.json().map(r => r.model_key)).to.include(pm.variables.get('model_key')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/models?make={{make}}&year={{mfg_year}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "models"
+              ],
+              "query": [
+                {
+                  "key": "make",
+                  "value": "{{make}}",
+                  "description": "required, from Makes"
+                },
+                {
+                  "key": "year",
+                  "value": "{{mfg_year}}",
+                  "description": "optional"
+                }
+              ]
+            },
+            "description": "Models of `make` on sale in `year`, most training bikes first. Use `model_key` (not the name) in later calls; `training_bikes` = 0 means the model was never bought and the price is low confidence."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/models?make={{make}}&year={{mfg_year}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "models"
+                  ],
+                  "query": [
+                    {
+                      "key": "make",
+                      "value": "{{make}}",
+                      "description": "required, from Makes"
+                    },
+                    {
+                      "key": "year",
+                      "value": "{{mfg_year}}",
+                      "description": "optional"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"model_key\": \"royalenfield|classic 350\",\n    \"model\": \"Classic 350\",\n    \"training_bikes\": 634\n  },\n  {\n    \"model_key\": \"royalenfield|bullet 350\",\n    \"model\": \"Bullet 350\",\n    \"training_bikes\": 123\n  },\n  {\n    \"model_key\": \"royalenfield|meteor 350\",\n    \"model\": \"Meteor 350\",\n    \"training_bikes\": 83\n  },\n  {\n    \"model_key\": \"royalenfield|interceptor 650\",\n    \"model\": \"Interceptor 650\",\n    \"training_bikes\": 62\n  },\n  {\n    \"model_key\": \"royalenfield|himalayan\",\n    \"model\": \"Himalayan\",\n    \"training_bikes\": 59\n  },\n  {\n    \"model_key\": \"royalenfield|continental gt 650\",\n    \"model\": \"Continental GT 650\",\n    \"training_bikes\": 43\n  },\n  {\n    \"model_key\": \"royalenfield|thunderbird 350\",\n    \"model\": \"Thunderbird 350\",\n    \"training_bikes\": 34\n  },\n  {\n    \"model_key\": \"royalenfield|thunderbird 350 x\",\n    \"model\": \"Thunderbird 350X\",\n    \"training_bikes\": 26\n  },\n  {\n    \"model_key\": \"royalenfield|classic 500\",\n    \"model\": \"Classic 500\",\n    \"training_bikes\": 16\n  },\n  {\n    \"model_key\": \"royalenfield|classic 350 signals\",\n    \"model\": \"Classic 350 Signals\",\n    \"training_bikes\": 7\n  },\n  {\n    \"model_key\": \"royalenfield|classic signals\",\n    \"model\": \"Classic Signals\",\n    \"training_bikes\": 6\n  },\n  {\n    \"model_key\": \"royalenfield|thunderbird 500\",\n    \"model\": \"Thunderbird 500\",\n    \"training_bikes\": 4\n  },\n  {\n    \"model_key\": \"royalenfield|bullet 500\",\n    \"model\": \"Bullet 500\",\n    \"training_bikes\": 3\n  },\n  {\n    \"model_key\": \"royalenfield|thunderbird 500 x\",\n    \"model\": \"Thunderbird 500X\",\n    \"training_bikes\": 3\n  },\n  {\n    \"model_key\": \"royalenfield|bullet trials 350\",\n    \"model\": \"Bullet Trials 350\",\n    \"training_bikes\": 1\n  },\n  {\n    \"model_key\": \"royalenfield|bullet trials 500\",\n    \"model\": \"Bullet Trials 500\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic 500 pegasus\",\n    \"model\": \"Classic 500 Pegasus\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic chrome\",\n    \"model\": \"Classic Chrome\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic desert storm\",\n    \"model\": \"Classic Desert Storm\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic gunmetal grey\",\n    \"model\": \"Classic Gunmetal Grey\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic squadron blue\",\n    \"model\": \"Classic Squadron Blue\",\n    \"training_bikes\": 0\n  },\n  {\n    \"model_key\": \"royalenfield|classic stealth black\",\n    \"model\": \"Classic Stealth Black\",\n    \"training_bikes\": 0\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Variants of a model",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('variant_id is in the list', () => pm.expect(pm.response.json().map(r => r.variant_id)).to.include(pm.variables.get('variant_id')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/variants?model_key={{model_key}}&year={{mfg_year}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "variants"
+              ],
+              "query": [
+                {
+                  "key": "model_key",
+                  "value": "{{model_key}}",
+                  "description": "required, from Models"
+                },
+                {
+                  "key": "year",
+                  "value": "{{mfg_year}}",
+                  "description": "optional"
+                }
+              ]
+            },
+            "description": "Variants of `model_key` on sale in `year`, cheapest first. `year_end` 9999 = on sale; `available_to` null = on sale."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/variants?model_key={{model_key}}&year={{mfg_year}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "variants"
+                  ],
+                  "query": [
+                    {
+                      "key": "model_key",
+                      "value": "{{model_key}}",
+                      "description": "required, from Models"
+                    },
+                    {
+                      "key": "year",
+                      "value": "{{mfg_year}}",
+                      "description": "optional"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  {\n    \"variant_id\": \"BW-V4542\",\n    \"variant\": \"Redditch Edition - Single Disc\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 138644.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V136\",\n    \"variant\": \"Standard\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 138644.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5173\",\n    \"variant\": \"Single Channel ABS\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 145816.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V4823\",\n    \"variant\": \"Redditch Edition - Dual Disc\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 147709.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V4970\",\n    \"variant\": \"Redditch Ed- Dual Channel ABS\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 153708.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5035\",\n    \"variant\": \"Standard - Dual Channel ABS\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 153728.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"IBB230023001\",\n    \"variant\": \"ABS - REDDITCH EDITION DD\",\n    \"year_start\": 2019,\n    \"year_end\": 2020,\n    \"available_from\": 2018,\n    \"available_to\": 2021,\n    \"ex_showroom\": 153903.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"IBB230023002\",\n    \"variant\": \"STANDARD ABS\",\n    \"year_start\": 2019,\n    \"year_end\": 2020,\n    \"available_from\": 2018,\n    \"available_to\": 2021,\n    \"ex_showroom\": 153903.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"IBB230025001\",\n    \"variant\": \"BS VI EFI\",\n    \"year_start\": 2020,\n    \"year_end\": 2021,\n    \"available_from\": 2019,\n    \"available_to\": 2022,\n    \"ex_showroom\": 169617.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"IBB230025002\",\n    \"variant\": \"GUN METAL GREY BS VI\",\n    \"year_start\": 2020,\n    \"year_end\": 2021,\n    \"available_from\": 2019,\n    \"available_to\": 2022,\n    \"ex_showroom\": 171453.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5353\",\n    \"variant\": \"Single Channel ABS - BS VI\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 174782.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5249\",\n    \"variant\": \"Standard - BS VI\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 183303.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5268\",\n    \"variant\": \"Gun Metal Grey - BS VI (Spoke)\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 185287.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V2937\",\n    \"variant\": \"Redditch\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 187434.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V8657\",\n    \"variant\": \"Redditch - Single Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 193080.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5270\",\n    \"variant\": \"Sandstone and Airborne - BS VI\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 194242.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V4345\",\n    \"variant\": \"Heritage\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 194669.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V10147\",\n    \"variant\": \"Halcyon - Single Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 195919.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5392\",\n    \"variant\": \"Gun Metal Grey - BS VI (Alloy)\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 197874.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V4346\",\n    \"variant\": \"Heritage Premium\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 199040.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V5583\",\n    \"variant\": \"Orange Ember & Metallo Silver\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 199328.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5269\",\n    \"variant\": \"Chrome and Stealth - BS VI\",\n    \"year_start\": 2009,\n    \"year_end\": 2021,\n    \"available_from\": 2008,\n    \"available_to\": 2022,\n    \"ex_showroom\": 201250.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BW-V5717\",\n    \"variant\": \"Halcyon - Dual Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 201984.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V2934\",\n    \"variant\": \"Signals\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 210684.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V8665\",\n    \"variant\": \"Classic Signals - Dual Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 213852.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V2935\",\n    \"variant\": \"Dark\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 219423.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V8663\",\n    \"variant\": \"Classic Dark - Dual Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 220991.0,\n    \"status\": \"Discontinued\"\n  },\n  {\n    \"variant_id\": \"BD-V2936\",\n    \"variant\": \"Chrome\",\n    \"year_start\": 2021,\n    \"year_end\": 9999,\n    \"available_from\": 2020,\n    \"available_to\": null,\n    \"ex_showroom\": 224275.0,\n    \"status\": \"On sale\"\n  },\n  {\n    \"variant_id\": \"BW-V8661\",\n    \"variant\": \"Classic Chrome - Dual Channel ABS\",\n    \"year_start\": 2021,\n    \"year_end\": 2024,\n    \"available_from\": 2020,\n    \"available_to\": 2025,\n    \"ex_showroom\": 224755.0,\n    \"status\": \"Discontinued\"\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Cities",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "pm.test('city is in the list', () => pm.expect(pm.response.json()).to.include(pm.variables.get('city')));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/cities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "cities"
+              ]
+            },
+            "description": "The cities in the training data; /api/predict accepts only these."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/cities",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "cities"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "[\n  \"Pune\",\n  \"Mumbai\",\n  \"Bangalore\",\n  \"Delhi\"\n]"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Price",
+      "item": [
+        {
+          "name": "Predict price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('price inside the 90% range', () => {",
+                  "    pm.expect(j.predicted_price).to.be.a('number');",
+                  "    pm.expect(j.predicted_price).to.be.within(j.model_range.low, j.model_range.high);",
+                  "});",
+                  "pm.test('±5k band around the price', () => pm.expect(j.price_band_5k.high - j.price_band_5k.low).to.eql(2 * j.price_band_5k.band_inr));",
+                  "if (j.warnings && j.warnings.length) console.log('warnings:', j.warnings);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Price for a used bike, as of today.\n\n| Field | Required | Notes |\n|---|---|---|\n| `make` | yes | from Makes |\n| `model_key` | yes | from Models; must belong to `make` |\n| `variant_id` | no | from Variants; null = not known → the model's cheapest variant for that year (as in training) |\n| `mfg_year` | yes | up to the quote year; within the variant's catalogue years |\n| `owner_count` | no (1) | 1-4; 4 = 4 or more |\n| `odometer_km` | yes | 0 - 2,000,000 |\n| `city` | yes | from Cities |\n| `quote_date` | no (today) | YYYY-MM-DD |\n\nReturns `predicted_price` (rounded to ₹100), `price_band_5k` (± ₹5,000), `model_range` (90%) and `model_ranges` (80 / 90 / 95%), `training_reference` (median price of similar training bikes), the 24 `features` used, and `warnings`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"model\": \"Pure MAXFIT + Optuna settings\",\n  \"quote_date\": \"2026-11-04\",\n  \"bike\": {\n    \"make\": \"Royal Enfield\",\n    \"model\": \"Classic 350\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"variant\": \"Standard\",\n    \"variant_id\": \"BW-V136\",\n    \"variant_basis\": \"matched_variant\",\n    \"mfg_year\": 2020,\n    \"owner_count\": 1,\n    \"odometer_km_entered\": 18000.0,\n    \"city\": \"Pune\"\n  },\n  \"predicted_price\": 135800.0,\n  \"price_band_5k\": {\n    \"low\": 130800.0,\n    \"high\": 140800.0,\n    \"band_inr\": 5000\n  },\n  \"model_range\": {\n    \"low\": 97500.0,\n    \"high\": 189300.0,\n    \"level_pct\": 90,\n    \"age_band\": \"6-9 yrs\"\n  },\n  \"model_ranges\": {\n    \"80\": {\n      \"low\": 107500.0,\n      \"high\": 171700.0,\n      \"level_pct\": 80,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"90\": {\n      \"low\": 97500.0,\n      \"high\": 189300.0,\n      \"level_pct\": 90,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"95\": {\n      \"low\": 84700.0,\n      \"high\": 218000.0,\n      \"level_pct\": 95,\n      \"age_band\": \"6-9 yrs\"\n    }\n  },\n  \"training_reference\": {\n    \"median_price\": 131080.44444444444,\n    \"bikes\": 56,\n    \"matched_on\": \"year + model\"\n  },\n  \"training_bikes_for_model\": 634,\n  \"features\": {\n    \"v_ex_showroom\": 138644.0,\n    \"m_exsh_median\": 193865.0,\n    \"m_exsh_min\": 138644.0,\n    \"m_exsh_max\": 224755.0,\n    \"v_engine_cc\": 346.0,\n    \"v_power_bhp\": 20.0,\n    \"v_mileage_kmpl\": 37.0,\n    \"vehicle_age\": 6.3333333333332575,\n    \"mfg_year\": 2020.0,\n    \"owner_count\": 1.0,\n    \"odometer_km\": 18000.0,\n    \"model_years_on_market\": 17,\n    \"years_since_discontinued\": 5.0,\n    \"v_year_start\": 2009,\n    \"make\": \"Royal Enfield\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"m2w_model_id\": \"BW-M78\",\n    \"category\": \"Bike\",\n    \"city\": \"Pune\",\n    \"v_segment\": \"CRUISER\",\n    \"v_status\": \"Discontinued\",\n    \"m_on_sale\": true,\n    \"variant_basis\": \"matched_variant\",\n    \"popularity_class\": \"High\"\n  },\n  \"monotonic_rules_in_model\": {\n    \"mfg_year\": 1,\n    \"owner_count\": -1,\n    \"m_exsh_median\": 1,\n    \"vehicle_age\": -1,\n    \"odometer_km\": -1,\n    \"v_ex_showroom\": 1\n  },\n  \"warnings\": []\n}"
+            }
+          ]
+        },
+        {
+          "name": "Predict price - variant not known",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('price inside the 90% range', () => {",
+                  "    pm.expect(j.predicted_price).to.be.a('number');",
+                  "    pm.expect(j.predicted_price).to.be.within(j.model_range.low, j.model_range.high);",
+                  "});",
+                  "pm.test('±5k band around the price', () => pm.expect(j.price_band_5k.high - j.price_band_5k.low).to.eql(2 * j.price_band_5k.band_inr));",
+                  "if (j.warnings && j.warnings.length) console.log('warnings:', j.warnings);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": null,\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "`variant_id` null: the model's cheapest variant for that mfg year is used, as in training; the response says so in `warnings` and `bike.variant_basis` = `model_base_variant`."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": null,\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"model\": \"Pure MAXFIT + Optuna settings\",\n  \"quote_date\": \"2026-11-04\",\n  \"bike\": {\n    \"make\": \"Royal Enfield\",\n    \"model\": \"Classic 350\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"variant\": \"Redditch Edition - Single Disc\",\n    \"variant_id\": \"BW-V4542\",\n    \"variant_basis\": \"model_base_variant\",\n    \"mfg_year\": 2020,\n    \"owner_count\": 1,\n    \"odometer_km_entered\": 18000.0,\n    \"city\": \"Pune\"\n  },\n  \"predicted_price\": 137600.0,\n  \"price_band_5k\": {\n    \"low\": 132600.0,\n    \"high\": 142600.0,\n    \"band_inr\": 5000\n  },\n  \"model_range\": {\n    \"low\": 98700.0,\n    \"high\": 191700.0,\n    \"level_pct\": 90,\n    \"age_band\": \"6-9 yrs\"\n  },\n  \"model_ranges\": {\n    \"80\": {\n      \"low\": 108900.0,\n      \"high\": 173900.0,\n      \"level_pct\": 80,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"90\": {\n      \"low\": 98700.0,\n      \"high\": 191700.0,\n      \"level_pct\": 90,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"95\": {\n      \"low\": 85700.0,\n      \"high\": 220700.0,\n      \"level_pct\": 95,\n      \"age_band\": \"6-9 yrs\"\n    }\n  },\n  \"training_reference\": {\n    \"median_price\": 131080.44444444444,\n    \"bikes\": 56,\n    \"matched_on\": \"year + model\"\n  },\n  \"training_bikes_for_model\": 634,\n  \"features\": {\n    \"v_ex_showroom\": 138644.0,\n    \"m_exsh_median\": 193865.0,\n    \"m_exsh_min\": 138644.0,\n    \"m_exsh_max\": 224755.0,\n    \"v_engine_cc\": 346.0,\n    \"v_power_bhp\": 20.0,\n    \"v_mileage_kmpl\": 37.0,\n    \"vehicle_age\": 6.3333333333332575,\n    \"mfg_year\": 2020.0,\n    \"owner_count\": 1.0,\n    \"odometer_km\": 18000.0,\n    \"model_years_on_market\": 17,\n    \"years_since_discontinued\": 5.0,\n    \"v_year_start\": 2009,\n    \"make\": \"Royal Enfield\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"m2w_model_id\": \"BW-M78\",\n    \"category\": \"Bike\",\n    \"city\": \"Pune\",\n    \"v_segment\": \"CRUISER\",\n    \"v_status\": \"Discontinued\",\n    \"m_on_sale\": true,\n    \"variant_basis\": \"model_base_variant\",\n    \"popularity_class\": \"High\"\n  },\n  \"monotonic_rules_in_model\": {\n    \"mfg_year\": 1,\n    \"owner_count\": -1,\n    \"m_exsh_median\": 1,\n    \"vehicle_age\": -1,\n    \"odometer_km\": -1,\n    \"v_ex_showroom\": 1\n  },\n  \"warnings\": [\n    \"Variant not given: the model's base variant for 2020 is used ('Redditch Edition - Single Disc'), as in training.\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Predict price - as of a date",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 OK', () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test('price inside the 90% range', () => {",
+                  "    pm.expect(j.predicted_price).to.be.a('number');",
+                  "    pm.expect(j.predicted_price).to.be.within(j.model_range.low, j.model_range.high);",
+                  "});",
+                  "pm.test('±5k band around the price', () => pm.expect(j.price_band_5k.high - j.price_band_5k.low).to.eql(2 * j.price_band_5k.band_inr));",
+                  "if (j.warnings && j.warnings.length) console.log('warnings:', j.warnings);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\",\n  \"quote_date\": \"2026-11-02\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "`quote_date` sets the date the price is for (the bike's age is counted to it)."
+          },
+          "response": [
+            {
+              "name": "200 OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\",\n  \"quote_date\": \"2026-11-02\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"model\": \"Pure MAXFIT + Optuna settings\",\n  \"quote_date\": \"2026-11-02\",\n  \"bike\": {\n    \"make\": \"Royal Enfield\",\n    \"model\": \"Classic 350\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"variant\": \"Standard\",\n    \"variant_id\": \"BW-V136\",\n    \"variant_basis\": \"matched_variant\",\n    \"mfg_year\": 2020,\n    \"owner_count\": 1,\n    \"odometer_km_entered\": 18000.0,\n    \"city\": \"Pune\"\n  },\n  \"predicted_price\": 135800.0,\n  \"price_band_5k\": {\n    \"low\": 130800.0,\n    \"high\": 140800.0,\n    \"band_inr\": 5000\n  },\n  \"model_range\": {\n    \"low\": 97500.0,\n    \"high\": 189300.0,\n    \"level_pct\": 90,\n    \"age_band\": \"6-9 yrs\"\n  },\n  \"model_ranges\": {\n    \"80\": {\n      \"low\": 107500.0,\n      \"high\": 171700.0,\n      \"level_pct\": 80,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"90\": {\n      \"low\": 97500.0,\n      \"high\": 189300.0,\n      \"level_pct\": 90,\n      \"age_band\": \"6-9 yrs\"\n    },\n    \"95\": {\n      \"low\": 84700.0,\n      \"high\": 218000.0,\n      \"level_pct\": 95,\n      \"age_band\": \"6-9 yrs\"\n    }\n  },\n  \"training_reference\": {\n    \"median_price\": 131080.44444444444,\n    \"bikes\": 56,\n    \"matched_on\": \"year + model\"\n  },\n  \"training_bikes_for_model\": 634,\n  \"features\": {\n    \"v_ex_showroom\": 138644.0,\n    \"m_exsh_median\": 193865.0,\n    \"m_exsh_min\": 138644.0,\n    \"m_exsh_max\": 224755.0,\n    \"v_engine_cc\": 346.0,\n    \"v_power_bhp\": 20.0,\n    \"v_mileage_kmpl\": 37.0,\n    \"vehicle_age\": 6.3333333333332575,\n    \"mfg_year\": 2020.0,\n    \"owner_count\": 1.0,\n    \"odometer_km\": 18000.0,\n    \"model_years_on_market\": 17,\n    \"years_since_discontinued\": 5.0,\n    \"v_year_start\": 2009,\n    \"make\": \"Royal Enfield\",\n    \"model_key\": \"royalenfield|classic 350\",\n    \"m2w_model_id\": \"BW-M78\",\n    \"category\": \"Bike\",\n    \"city\": \"Pune\",\n    \"v_segment\": \"CRUISER\",\n    \"v_status\": \"Discontinued\",\n    \"m_on_sale\": true,\n    \"variant_basis\": \"matched_variant\",\n    \"popularity_class\": \"High\"\n  },\n  \"monotonic_rules_in_model\": {\n    \"mfg_year\": 1,\n    \"owner_count\": -1,\n    \"m_exsh_median\": 1,\n    \"vehicle_age\": -1,\n    \"odometer_km\": -1,\n    \"v_ex_showroom\": 1\n  },\n  \"warnings\": []\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Error cases",
+      "item": [
+        {
+          "name": "No token → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));",
+                  "pm.test('error message', () => pm.expect(JSON.stringify(pm.response.json().detail)).to.include('Not authenticated'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Any /api/* or /auth/me call without a valid token. An expired token gives `Not logged in or session expired`."
+          },
+          "response": [
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Not authenticated\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Wrong password → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401', () => pm.response.to.have.status(401));",
+                  "pm.test('error message', () => pm.expect(JSON.stringify(pm.response.json().detail)).to.include('Wrong username or password'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "token"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "username",
+                  "value": "{{username}}",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "not-the-password",
+                  "type": "text"
+                }
+              ]
+            },
+            "description": "Login with a wrong password."
+          },
+          "response": [
+            {
+              "name": "401 Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "token"
+                  ]
+                },
+                "auth": {
+                  "type": "noauth"
+                },
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "username",
+                      "value": "{{username}}",
+                      "type": "text"
+                    },
+                    {
+                      "key": "password",
+                      "value": "not-the-password",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"Wrong username or password\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "City not served → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422', () => pm.response.to.have.status(422));",
+                  "pm.test('error message', () => pm.expect(JSON.stringify(pm.response.json().detail)).to.include('city must be one of'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"Chennai\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "`city` must be one of /api/cities."
+          },
+          "response": [
+            {
+              "name": "422 Unprocessable Content",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"Chennai\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"city must be one of ['Pune', 'Mumbai', 'Bangalore', 'Delhi']\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Variant of another model → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422', () => pm.response.to.have.status(422));",
+                  "pm.test('error message', () => pm.expect(JSON.stringify(pm.response.json().detail)).to.include('is not a variant of'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"royalenfield|bullet 350\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "`variant_id` must belong to `model_key` (and `model_key` to `make`)."
+          },
+          "response": [
+            {
+              "name": "422 Unprocessable Content",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"royalenfield|bullet 350\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"odometer_km\": 18000,\n  \"city\": \"{{city}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": \"variant 'BW-V136' is not a variant of 'royalenfield|bullet 350'\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Missing field → 422",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('422', () => pm.response.to.have.status(422));",
+                  "pm.test('error message', () => pm.expect(JSON.stringify(pm.response.json().detail)).to.include('odometer_km'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/predict",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "predict"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"city\": \"{{city}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Request validation: `odometer_km` is required. `detail` lists each bad field."
+          },
+          "response": [
+            {
+              "name": "422 Unprocessable Content",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/predict",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "predict"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"make\": \"{{make}}\",\n  \"model_key\": \"{{model_key}}\",\n  \"variant_id\": \"{{variant_id}}\",\n  \"mfg_year\": {{mfg_year}},\n  \"owner_count\": 1,\n  \"city\": \"{{city}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"detail\": [\n    {\n      \"type\": \"missing\",\n      \"loc\": [\n        \"body\",\n        \"odometer_km\"\n      ],\n      \"msg\": \"Field required\",\n      \"input\": {\n        \"make\": \"Royal Enfield\",\n        \"model_key\": \"royalenfield|classic 350\",\n        \"variant_id\": \"BW-V136\",\n        \"mfg_year\": 2020,\n        \"owner_count\": 1,\n        \"city\": \"Pune\"\n      }\n    }\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
